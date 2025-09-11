@@ -18,42 +18,136 @@ BuildChoices:
     test_123:
         BotName: Test
         Cycle:
-            - DummyOpening
+            - OneBaseTempest
 
     Protoss:
         BotName: ProtossRace
         Cycle:
-            - DummyOpening
+            - ProxyNexus
+            - ProxyZealot
+            - ProxyZealotWithProbes
+            - ProbeRush
+            - OneBaseTempest
+            - ProxyVoids
+            - Carriers
 
     Random:
         BotName: RandomRace
         Cycle:
-            - DummyOpening
+            - ProxyNexus
+            - ProxyZealot
+            - ProxyZealotWithProbes
+            - ProbeRush
+            - OneBaseTempest
+            - ProxyVoids
+            - Carriers
 
     Terran:
         BotName: TerranRace
         Cycle:
-            - DummyOpening
+            - ProxyNexus
+            - ProxyZealot
+            - ProxyZealotWithProbes
+            - ProbeRush
+            - OneBaseTempest
+            - ProxyVoids
+            - Carriers
 
     Zerg:
         BotName: ZergRace
         Cycle:
-            - DummyOpening
-
-    # Can also use specific opponent ids (overrides race options above)
-    a_bot_opponent_id_from_aiarena:
-        BotName: QueenBot
-        Cycle:
-            - DummyOpening
+          - ProxyNexus
+            - ProxyZealot
+            - ProxyZealotWithProbes
+            - ProbeRush
+            - OneBaseTempest
+            - ProxyVoids
+            - Carriers
 
 Builds:
-    DummyOpening:
+    Carriers:
+        ConstantWorkerProductionTill: 23
+        AutoSupplyAtSupply: 44
+        OpeningBuildOrder:
+            - 14 pylon @ ramp
+            - 15 gate @ ramp
+            - 15 chrono @ nexus
+            - 17 gas
+            - 19 core @ ramp
+            - 19 gas
+            - 19 pylon
+            - 19 chrono @ nexus
+            - 19 nexus
+            - 19 stargate
+
+    ProxyVoids:
+        ConstantWorkerProductionTill: 0
+        AutoSupplyAtSupply: 200
+        OpeningBuildOrder:
+          - 12 pylon @ ramp
+          - 12 probe
+          - 13 gate @ ramp
+          - 13 chrono @ nexus
+          - 13 probe
+          - 14 gas
+          - 14 probe *2
+          - 16 gas
+          - 16 core @ ramp
+
+    ProxyNexus:
+      # Build constant workers till x supply
+      ConstantWorkerProductionTill: 18
+      OpeningBuildOrder:
+        - 14 pylon @ ramp
+        - 15 gate @ ramp
+        - 16 gate @ ramp
+
+    ProxyZealot:
         # Build constant workers till x supply
         ConstantWorkerProductionTill: 0
         OpeningBuildOrder:
-            # Example: ['12 worker', '13 worker', '14 supply', '14 worker', '15 chrono @ nexus',
-            #           '15 worker', '16 gateway']
-            # See docs: https://aressc2.github.io/ares-sc2/tutorials.html#build-runner-system
-            []
+          - 12 probe *3
+
+    ProxyZealotWithProbes:
+      # Build constant workers till x supply
+      ConstantWorkerProductionTill: 0
+      OpeningBuildOrder:
+        - 12 probe *3
+
+    ProbeRush:
+      # Build constant workers till x supply
+      ConstantWorkerProductionTill: 22
+      OpeningBuildOrder:
+        - 12 worker
+        - 12 chrono @ nexus
+        - 12 worker *2
+
+    OneBaseTempest:
+        ConstantWorkerProductionTill: 22
+        AutoSupplyAtSupply: 22
+        OpeningBuildOrder:
+            - 14 pylon @ ramp
+            - 15 forge @ ramp
+            - 15 chrono @ nexus
+            - 17 gateway @ ramp
+            - 17 gas
+            - 16 photoncannon @ ramp *2
+            - 16 gas
+            - 16 pylon
+            - 16 core
+            - 16 photoncannon @ ramp
+            - 16 pylon
+            - 16 stargate
+            - 16 shieldbattery @ ramp
+            - 16 photoncannon @ ramp
+            - 16 fleetbeacon
+            - 16 photoncannon
+            - 16 pylon *2
+            - 16 tempest
+            - 16 chrono @ stargate
+            - 16 tempestgroundattackupgrade
+            - 16 photoncannon
+            - 16 shieldbattery
+
 
 
