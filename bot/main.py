@@ -73,6 +73,10 @@ class MyBot(AresBot):
         compare_health: float = max(50.0, unit.health_max * 0.09)
         if unit.health < compare_health:
             self.mediator.cancel_structure(structure=unit)
+            if self.opening_handler and hasattr(
+                    self.opening_handler, "on_unit_cancelled"
+            ):
+                self.opening_handler.on_unit_cancelled(unit)
 
     async def on_building_construction_complete(self, unit: Unit) -> None:
         await super(MyBot, self).on_building_construction_complete(unit)

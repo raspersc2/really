@@ -168,3 +168,8 @@ class ProxyNexus(OpeningBase):
             next_item_to_build=next_item_to_build,
             build_location=build_location,
         )
+
+    def on_unit_cancelled(self, unit: Unit) -> None:
+        if unit.type_id == UnitTypeId.NEXUS:
+            self._start_attack = True
+            self._recall_complete = True
