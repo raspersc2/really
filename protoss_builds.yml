@@ -56,7 +56,7 @@ BuildChoices:
     Zerg:
         BotName: ZergRace
         Cycle:
-          - ProxyNexus
+            - ProxyNexus
             - ProxyZealot
             - ProxyZealotWithProbes
             - ProbeRush
