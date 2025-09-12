@@ -28,6 +28,7 @@ class MyBot(AresBot):
         """
         super().__init__(game_step_override)
         self.opening_handler: Optional[Any] = None
+        self.opening_chat_tag: bool = False
 
     def load_opening(self, opening_name: str) -> None:
         """Load opening from bot.openings.<snake_case> with class <PascalCase>"""
@@ -56,6 +57,10 @@ class MyBot(AresBot):
 
         if self.opening_handler and hasattr(self.opening_handler, "on_step"):
             await self.opening_handler.on_step()
+
+        if not self.opening_chat_tag and self.time > 5.0:
+            await self.chat_send(f"Tag:  {self.build_order_runner.chosen_opening}")
+            self.opening_chat_tag = True
 
     async def on_unit_created(self, unit: Unit) -> None:
         await super(MyBot, self).on_unit_created(unit)
