@@ -79,7 +79,7 @@ class MyBot(AresBot):
         if unit.health < compare_health:
             self.mediator.cancel_structure(structure=unit)
             if self.opening_handler and hasattr(
-                    self.opening_handler, "on_unit_cancelled"
+                self.opening_handler, "on_unit_cancelled"
             ):
                 self.opening_handler.on_unit_cancelled(unit)
 

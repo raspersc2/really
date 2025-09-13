@@ -89,7 +89,9 @@ class ProbeProxyBuilder(BaseCombat):
                 ):
                     proxy_maneuver.add(KeepUnitSafe(unit=unit, grid=grid))
                 proxy_maneuver.add(
-                    PathUnitToTarget(unit=unit, target=target, grid=grid)
+                    PathUnitToTarget(
+                        unit=unit, target=target, grid=grid, success_at_distance=4.0
+                    )
                 )
                 if unit.tag == primary_builder_tag:
                     proxy_maneuver.add(KeepUnitSafe(unit=unit, grid=grid))

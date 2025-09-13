@@ -38,10 +38,10 @@ class ProxyNexus(OpeningBase):
         self._proxy_location = self.ai.mediator.get_enemy_third
         if self.ai.enemy_race in {Race.Random, Race.Zerg}:
             if path := self.ai.mediator.find_raw_path(
-                    start=self.ai.mediator.get_enemy_nat,
-                    target=self.ai.game_info.map_center,
-                    grid=self.ai.mediator.get_ground_grid,
-                    sensitivity=1,
+                start=self.ai.mediator.get_enemy_nat,
+                target=self.ai.game_info.map_center,
+                grid=self.ai.mediator.get_ground_grid,
+                sensitivity=1,
             ):
                 if len(path) > 18:
                     self._proxy_location = Point2(path[18])
