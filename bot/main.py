@@ -1,6 +1,9 @@
 import importlib
 from typing import Any, Optional
 
+from sc2.data import Race
+from src.ares.consts import UnitRole
+
 from ares import AresBot
 from ares.behaviors.macro import Mining
 from sc2.unit import Unit
@@ -29,6 +32,7 @@ class MyBot(AresBot):
         super().__init__(game_step_override)
         self.opening_handler: Optional[Any] = None
         self.opening_chat_tag: bool = False
+        self._switched_to_prevent_tie: bool = False
 
     def load_opening(self, opening_name: str) -> None:
         """Load opening from bot.openings.<snake_case> with class <PascalCase>"""
@@ -55,11 +59,21 @@ class MyBot(AresBot):
         await super(MyBot, self).on_step(iteration)
         self.register_behavior(Mining())
 
+        if not self._switched_to_prevent_tie and self.floating_enemy:
+            self._switched_to_prevent_tie = True
+            self.load_opening("OneBaseTempest")
+            if hasattr(self.opening_handler, "on_start"):
+                await self.opening_handler.on_start(self)
+            for worker in self.workers:
+                self.mediator.assign_role(tag=worker.tag, role=UnitRole.GATHERING)
+
         if self.opening_handler and hasattr(self.opening_handler, "on_step"):
             await self.opening_handler.on_step()
 
         if not self.opening_chat_tag and self.time > 5.0:
-            await self.chat_send(f"Tag:  {self.build_order_runner.chosen_opening}")
+            await self.chat_send(
+                f"Tag: {self.build_order_runner.chosen_opening}", team_only=True
+            )
             self.opening_chat_tag = True
 
     async def on_unit_created(self, unit: Unit) -> None:
@@ -89,3 +103,17 @@ class MyBot(AresBot):
             self.opening_handler, "on_building_construction_complete"
         ):
             self.opening_handler.on_building_construction_complete(unit)
+
+    @property
+    def floating_enemy(self) -> bool:
+        if self.enemy_race != Race.Terran or self.time < 270.0:
+            return False
+
+        if (
+            len([s for s in self.enemy_structures if s.is_flying]) > 0
+            and self.state.visibility[self.enemy_start_locations[0].rounded] != 0
+            and len(self.enemy_units) < 4
+        ):
+            return True
+
+        return False
