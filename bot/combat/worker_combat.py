@@ -8,7 +8,7 @@ from ares.behaviors.combat.individual import (
     KeepUnitSafe,
     PathUnitToTarget,
     ShootTargetInRange,
-    WorkerKiteBack,
+    WorkerKiteBack, AttackTarget,
 )
 from ares.consts import ALL_STRUCTURES
 from ares.managers.manager_mediator import ManagerMediator
@@ -57,7 +57,7 @@ class WorkerCombat(BaseCombat):
         )
         avoid_grid: np.ndarray = self.mediator.get_air_avoidance_grid
         grid: np.ndarray = self.mediator.get_ground_grid
-
+        can_attack_structures: bool = self.ai.time > 120.0
         close_enemy: list[Unit] = [
             u
             for u in close_enemy
@@ -79,25 +79,24 @@ class WorkerCombat(BaseCombat):
             attacking_maneuver: CombatManeuver = CombatManeuver()
             attacking_maneuver.add(KeepUnitSafe(unit=unit, grid=avoid_grid))
             attacking_maneuver.add(ShootTargetInRange(unit, only_enemy_units))
-            if not only_enemy_units:
+            if not only_enemy_units and can_attack_structures:
                 attacking_maneuver.add(ShootTargetInRange(unit, close_enemy))
             if close_enemy:
-                if unit.shield_health_percentage < 0.35:
-                    attacking_maneuver.add(KeepUnitSafe(unit=unit, grid=grid))
+                target_unit: Unit | None = None
+                if only_enemy_units:
+                    target_unit = cy_closest_to(unit.position, only_enemy_units)
+                elif can_attack_structures:
+                    target_unit = cy_closest_to(unit.position, close_enemy)
+                if not target_unit:
+                    pass
+                elif not self.mediator.is_position_safe(
+                    grid=grid, position=unit.position
+                ):
+                    attacking_maneuver.add(
+                        WorkerKiteBack(unit=unit, target=target_unit)
+                    )
                 else:
-                    target_unit: Unit
-                    if only_enemy_units:
-                        target_unit = cy_closest_to(unit.position, only_enemy_units)
-                    else:
-                        target_unit = cy_closest_to(unit.position, close_enemy)
-                    if not self.mediator.is_position_safe(
-                        grid=grid, position=unit.position
-                    ):
-                        attacking_maneuver.add(
-                            WorkerKiteBack(unit=unit, target=target_unit)
-                        )
-                    else:
-                        attacking_maneuver.add(AMove(unit=unit, target=target))
+                    attacking_maneuver.add(AttackTarget(unit=unit, target=target_unit))
 
             attacking_maneuver.add(
                 PathUnitToTarget(unit=unit, target=target, grid=grid)

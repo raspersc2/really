@@ -41,7 +41,7 @@ class ProbeRush(OpeningBase):
         for worker in self.ai.workers:
             self.ai.mediator.assign_role(tag=worker.tag, role=UnitRole.ATTACKING)
             shield_perc: float = worker.shield_percentage
-            if shield_perc < 0.05:
+            if shield_perc < 0.2:
                 self._low_shield_tags.add(worker.tag)
                 self.ai.mediator.assign_role(
                     tag=worker.tag, role=UnitRole.CONTROL_GROUP_ONE
@@ -73,7 +73,7 @@ class ProbeRush(OpeningBase):
             )
             close_ground_enemy: Units = self.ai.mediator.get_units_in_range(
                 start_points=[squad.squad_position],
-                distances=11.5,
+                distances=12.5,
                 query_tree=UnitTreeQueryType.EnemyGround,
             )[0].filter(lambda u: u.type_id not in COMMON_UNIT_IGNORE_TYPES)
             self.worker_combat.execute(

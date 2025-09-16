@@ -18,7 +18,7 @@ BuildChoices:
     test_123:
         BotName: Test
         Cycle:
-            - OneBaseTempest
+            - ProbeRush
 
     Protoss:
         BotName: ProtossRace
@@ -138,13 +138,13 @@ Builds:
             - 16 photoncannon @ ramp
             - 16 pylon
             - 16 stargate
-            - 16 shieldbattery @ ramp
-            - 16 photoncannon @ ramp
+            - 16 photoncannon @ ramp *2
             - 16 fleetbeacon
             - 16 photoncannon
             - 16 pylon *2
             - 16 tempest
             - 16 chrono @ stargate
+            - 16 pylon
             - 16 tempestgroundattackupgrade
             - 16 photoncannon
             - 16 shieldbattery

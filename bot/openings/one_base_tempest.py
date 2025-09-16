@@ -34,6 +34,9 @@ class OneBaseTempest(OpeningBase):
         self.tempest_combat = AirCombat(ai, ai.config, ai.mediator)
 
     async def on_step(self) -> None:
+        if self.ai.minerals > 700 and not self.ai.build_order_runner.build_completed:
+            self.ai.build_order_runner.set_build_completed()
+
         # role assignment
         for tempest in self.ai.mediator.get_own_army_dict[UnitID.TEMPEST]:
             self.ai.mediator.assign_role(tag=tempest.tag, role=UnitRole.ATTACKING)
