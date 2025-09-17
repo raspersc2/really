@@ -8,7 +8,8 @@ from ares.behaviors.combat.individual import (
     KeepUnitSafe,
     PathUnitToTarget,
     ShootTargetInRange,
-    WorkerKiteBack, AttackTarget,
+    WorkerKiteBack,
+    AttackTarget,
 )
 from ares.consts import ALL_STRUCTURES
 from ares.managers.manager_mediator import ManagerMediator

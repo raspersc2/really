@@ -1,9 +1,10 @@
-from ares import AresBot, UnitRole
-from ares.behaviors.macro import BuildWorkers, Mining
-from ares.consts import UnitTreeQueryType
+import numpy as np
+
+from ares import AresBot
+from ares.behaviors.combat.individual import KeepUnitSafe
+from ares.consts import UnitTreeQueryType, UnitRole
 from ares.managers.squad_manager import UnitSquad
 from cython_extensions.units_utils import cy_closest_to
-from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
@@ -21,34 +22,27 @@ class ProbeRush(OpeningBase):
     def __init__(self):
         super().__init__()
         self._low_shield_tags: set[int] = set()
+        self._start_attack_at_time: float = 10
+        self._initial_assignment: bool = False
+        self._max_probes_in_attack: int = 200
+        self._keep_assigning: bool = True
+        self._stack_for: float = 1.85
 
     async def on_start(self, ai: AresBot) -> None:
         await super().on_start(ai)
         self.worker_combat = WorkerCombat(ai, ai.config, ai.mediator)
+        self._opening_specific_settings()
 
     async def on_step(self) -> None:
-        if self.ai.supply_workers < 1:
+        if self.ai.supply_used < 1:
             await self.ai.client.leave()
 
-        if self.ai.supply_left and self.ai.can_afford(UnitTypeId.PROBE):
-            self.ai.register_behavior(BuildWorkers(200))
-
         if not self.attack_commenced:
-            if self.ai.time >= 10:
+            if self.ai.time >= self._start_attack_at_time:
                 self.attack_commenced = True
             return
 
-        for worker in self.ai.workers:
-            self.ai.mediator.assign_role(tag=worker.tag, role=UnitRole.ATTACKING)
-            shield_perc: float = worker.shield_percentage
-            if shield_perc < 0.2:
-                self._low_shield_tags.add(worker.tag)
-                self.ai.mediator.assign_role(
-                    tag=worker.tag, role=UnitRole.CONTROL_GROUP_ONE
-                )
-            elif worker.tag in self._low_shield_tags and shield_perc > 0.99:
-                self._low_shield_tags.remove(worker.tag)
-                self.ai.mediator.assign_role(tag=worker.tag, role=UnitRole.ATTACKING)
+        self._assign_workers()
 
         # micro
         squads: list[UnitSquad] = self.ai.mediator.get_squads(
@@ -62,10 +56,13 @@ class ProbeRush(OpeningBase):
         )
 
         for squad in squads:
-            if self.ai.time < 11.0:
+            if self.ai.time < self._start_attack_at_time + self._stack_for:
                 mf: Unit = cy_closest_to(self.ai.start_location, self.ai.mineral_field)
                 for unit in squad.squad_units:
-                    unit.gather(mf)
+                    if unit.is_carrying_resource:
+                        unit.return_resource()
+                    else:
+                        unit.gather(mf)
                 continue
 
             target: Point2 = (
@@ -82,10 +79,51 @@ class ProbeRush(OpeningBase):
                 target=target,
             )
 
+        grid: np.ndarray = self.ai.mediator.get_ground_grid
         for worker in self.ai.mediator.get_units_from_role(
             role=UnitRole.CONTROL_GROUP_ONE
         ):
-            if not worker.is_gathering:
+            if not self.ai.mediator.is_position_safe(
+                grid=grid, position=worker.position
+            ):
+                self.ai.register_behavior(KeepUnitSafe(unit=worker, grid=grid))
+            elif not worker.is_gathering:
                 worker.gather(
                     cy_closest_to(self.ai.start_location, self.ai.mineral_field)
                 )
+
+    def _opening_specific_settings(self):
+        if self.ai.build_order_runner.chosen_opening == "MightBeAWorkerRush":
+            self._keep_assigning = False
+            self._max_probes_in_attack = 9
+            self._start_attack_at_time = 5.0
+
+    def _assign_workers(self):
+        if not self._initial_assignment:
+            num_assigned: int = 0
+            for worker in self.ai.workers:
+                if num_assigned >= self._max_probes_in_attack:
+                    break
+
+                self.ai.mediator.assign_role(tag=worker.tag, role=UnitRole.ATTACKING)
+                self.ai.mediator.remove_worker_from_mineral(worker_tag=worker.tag)
+                num_assigned += 1
+            self._initial_assignment = True
+
+        else:
+            for worker in self.ai.workers:
+                if self._keep_assigning:
+                    self.ai.mediator.assign_role(
+                        tag=worker.tag, role=UnitRole.ATTACKING
+                    )
+                shield_perc: float = worker.shield_percentage
+                if shield_perc < 0.3:
+                    self._low_shield_tags.add(worker.tag)
+                    self.ai.mediator.assign_role(
+                        tag=worker.tag, role=UnitRole.CONTROL_GROUP_ONE
+                    )
+                elif worker.tag in self._low_shield_tags and shield_perc > 0.99:
+                    self._low_shield_tags.remove(worker.tag)
+                    self.ai.mediator.assign_role(
+                        tag=worker.tag, role=UnitRole.ATTACKING
+                    )
