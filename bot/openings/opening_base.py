@@ -60,12 +60,10 @@ class OpeningBase(metaclass=ABCMeta):
         if enemy_units:
             center_mass, num_units = cy_find_units_center_mass(enemy_units, 12.5)
         enemy_structures: Units = self.ai.enemy_structures
-        if num_units > 6:
+        if num_units > 5:
             return Point2(center_mass)
         elif enemy_structures and self.ai.time > 120.0:
             return cy_closest_to(self.ai.start_location, enemy_structures).position
-        elif enemy_units:
-            return cy_closest_to(self.ai.start_location, enemy_units).position
         elif (
             self.ai.time < 150.0
             or self.ai.state.visibility[self.ai.enemy_start_locations[0].rounded] == 0
