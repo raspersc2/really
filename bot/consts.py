@@ -19,6 +19,11 @@ ATTACK_TARGET_IGNORE: set[UnitID] = {
 
 COMMON_UNIT_IGNORE_TYPES: set[UnitID] = {UnitID.EGG, UnitID.LARVA}
 
+PROXY_4G_PLAN: list[tuple[UnitTypeId, int]] = [
+    (UnitTypeId.PYLON, 1),
+    (UnitTypeId.GATEWAY, 1),
+]
+
 PROXY_VOID_PLAN: list[tuple[UnitTypeId, int]] = [
     (UnitTypeId.PYLON, 2),
     (UnitTypeId.STARGATE, 1),

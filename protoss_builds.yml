@@ -18,12 +18,13 @@ BuildChoices:
     test_123:
         BotName: Test
         Cycle:
-            - ProbeRush
+            - MightBeAWorkerRush
 
     Protoss:
         BotName: ProtossRace
         Cycle:
             - ProxyNexus
+            - MightBeAWorkerRush
             - ProxyZealot
             - ProxyZealotWithProbes
             - ProbeRush
@@ -35,6 +36,7 @@ BuildChoices:
         BotName: RandomRace
         Cycle:
             - ProxyNexus
+            - MightBeAWorkerRush
             - ProxyZealot
             - ProxyZealotWithProbes
             - ProbeRush
@@ -46,6 +48,7 @@ BuildChoices:
         BotName: TerranRace
         Cycle:
             - ProxyNexus
+            - MightBeAWorkerRush
             - ProxyZealot
             - ProxyZealotWithProbes
             - ProbeRush
@@ -57,6 +60,7 @@ BuildChoices:
         BotName: ZergRace
         Cycle:
             - ProxyNexus
+            - MightBeAWorkerRush
             - ProxyZealot
             - ProxyZealotWithProbes
             - ProbeRush
@@ -80,47 +84,61 @@ Builds:
             - 19 nexus
             - 19 stargate
 
+    MightBeAWorkerRush:
+        ConstantWorkerProductionTill: 36
+        AutoSupplyAtSupply: 22
+        OpeningBuildOrder:
+            - 12 chrono @ nexus
+            - 15 pylon @ ramp
+            - 18 gate @ ramp
+            - 16 chrono @ nexus
+            - 20 core @ ramp
+            - 17 gas
+            - 17 gateway
+            - 17 warpgateresearch
+            - 17 chrono @ core
+
     ProxyVoids:
         ConstantWorkerProductionTill: 0
         AutoSupplyAtSupply: 200
         OpeningBuildOrder:
-          - 12 pylon @ ramp
-          - 12 probe
-          - 13 gate @ ramp
-          - 13 chrono @ nexus
-          - 13 probe
-          - 14 gas
-          - 14 probe *2
-          - 16 gas
-          - 16 core @ ramp
+            - 12 pylon @ ramp
+            - 12 probe
+            - 13 gate @ ramp
+            - 13 chrono @ nexus
+            - 13 probe
+            - 14 gas
+            - 14 probe *2
+            - 16 gas
+            - 16 core @ ramp
 
     ProxyNexus:
-      # Build constant workers till x supply
-      ConstantWorkerProductionTill: 18
-      OpeningBuildOrder:
-        - 14 pylon @ ramp
-        - 15 gate @ ramp
-        - 16 gate @ ramp
+        # Build constant workers till x supply
+        ConstantWorkerProductionTill: 18
+        OpeningBuildOrder:
+            - 14 pylon @ ramp
+            - 15 gate @ ramp
+            - 16 gate @ ramp
 
     ProxyZealot:
         # Build constant workers till x supply
         ConstantWorkerProductionTill: 0
         OpeningBuildOrder:
-          - 12 probe *3
+            - 12 probe *3
 
     ProxyZealotWithProbes:
-      # Build constant workers till x supply
-      ConstantWorkerProductionTill: 0
-      OpeningBuildOrder:
-        - 12 probe *3
+        # Build constant workers till x supply
+        ConstantWorkerProductionTill: 0
+        OpeningBuildOrder:
+            - 12 probe *3
 
     ProbeRush:
-      # Build constant workers till x supply
-      ConstantWorkerProductionTill: 22
-      OpeningBuildOrder:
-        - 12 worker
-        - 12 chrono @ nexus
-        - 12 worker *2
+        # Build constant workers till x supply
+        ConstantWorkerProductionTill: 22
+        OpeningBuildOrder:
+            - 12 worker
+            - 12 chrono @ nexus
+            - 12 worker *2
 
     OneBaseTempest:
         ConstantWorkerProductionTill: 22

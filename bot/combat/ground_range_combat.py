@@ -4,13 +4,12 @@ from typing import TYPE_CHECKING, Union
 import numpy as np
 from ares.behaviors.combat import CombatManeuver
 from ares.behaviors.combat.individual import (
-    AttackTarget,
     KeepUnitSafe,
     PathUnitToTarget,
     ShootTargetInRange,
-    WorkerKiteBack,
+    StutterUnitBack,
 )
-from ares.consts import ALL_STRUCTURES
+from ares.consts import ALL_STRUCTURES, UnitTreeQueryType
 from ares.managers.manager_mediator import ManagerMediator
 from cython_extensions import cy_closest_to
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
@@ -19,6 +18,7 @@ from sc2.unit import Unit
 from sc2.units import Units
 
 from bot.combat.base_combat import BaseCombat
+from bot.consts import COMMON_UNIT_IGNORE_TYPES
 
 if TYPE_CHECKING:
     from ares import AresBot
@@ -33,7 +33,7 @@ DANGER_TO_AIR: set[UnitID] = {
 
 
 @dataclass
-class WorkerCombat(BaseCombat):
+class GroundRangeCombat(BaseCombat):
     """Execute behavior for Tempest Combat.
 
     Parameters
@@ -51,54 +51,56 @@ class WorkerCombat(BaseCombat):
     mediator: ManagerMediator
 
     def execute(self, units: Union[list[Unit], Units], **kwargs) -> None:
-        close_enemy: Units = kwargs["all_close_enemy"]
         target: Point2 = (
             kwargs["target"] if "target" in kwargs else self.ai.enemy_start_locations[0]
         )
+        near_enemy: dict[int, Units] = self.mediator.get_units_in_range(
+            start_points=units,
+            distances=13,
+            query_tree=UnitTreeQueryType.AllEnemy,
+            return_as_dict=True,
+        )
         avoid_grid: np.ndarray = self.mediator.get_air_avoidance_grid
         grid: np.ndarray = self.mediator.get_ground_grid
-        can_attack_structures: bool = self.ai.time > 120.0
-        close_enemy: list[Unit] = [
-            u
-            for u in close_enemy
-            if (not u.is_cloaked or u.is_cloaked and u.is_revealed)
-            and (not u.is_burrowed or u.is_burrowed and u.is_visible)
-            and not u.is_memory
-            and not u.is_snapshot
-        ]
-
-        only_enemy_units: list[Unit] = [
-            u for u in close_enemy if u.type_id not in ALL_STRUCTURES
-        ]
 
         for unit in units:
-            if unit.is_carrying_minerals:
-                unit.return_resource()
-                continue
+            close_enemy: list[Unit] = [
+                u
+                for u in near_enemy[unit.tag]
+                if (not u.is_cloaked or u.is_cloaked and u.is_revealed)
+                and (not u.is_burrowed or u.is_burrowed and u.is_visible)
+                and not u.is_memory
+                and not u.is_snapshot
+                and u.type_id not in COMMON_UNIT_IGNORE_TYPES
+            ]
+
+            only_enemy_units: list[Unit] = [
+                u for u in close_enemy if u.type_id not in ALL_STRUCTURES
+            ]
 
             attacking_maneuver: CombatManeuver = CombatManeuver()
             attacking_maneuver.add(KeepUnitSafe(unit=unit, grid=avoid_grid))
+
             attacking_maneuver.add(ShootTargetInRange(unit, only_enemy_units))
-            if not only_enemy_units and can_attack_structures:
+            if not only_enemy_units:
                 attacking_maneuver.add(ShootTargetInRange(unit, close_enemy))
-            if close_enemy:
-                target_unit: Unit | None = None
+
+            if unit.shield_percentage < 0.3:
+                attacking_maneuver.add(KeepUnitSafe(unit=unit, grid=grid))
+
+            elif close_enemy:
+                target_unit: Unit | None
                 if only_enemy_units:
                     target_unit = cy_closest_to(unit.position, only_enemy_units)
-                elif can_attack_structures:
-                    target_unit = cy_closest_to(unit.position, close_enemy)
-                if not target_unit:
-                    pass
-                elif not self.mediator.is_position_safe(
-                    grid=grid, position=unit.position
-                ):
-                    attacking_maneuver.add(
-                        WorkerKiteBack(unit=unit, target=target_unit)
-                    )
                 else:
-                    attacking_maneuver.add(AttackTarget(unit=unit, target=target_unit))
+                    target_unit = cy_closest_to(unit.position, close_enemy)
 
-            attacking_maneuver.add(
-                PathUnitToTarget(unit=unit, target=target, grid=grid)
-            )
+                attacking_maneuver.add(
+                    StutterUnitBack(unit=unit, target=target_unit, grid=grid)
+                )
+
+            else:
+                attacking_maneuver.add(
+                    PathUnitToTarget(unit=unit, target=target, grid=grid)
+                )
             self.ai.register_behavior(attacking_maneuver)

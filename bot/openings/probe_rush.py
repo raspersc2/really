@@ -1,9 +1,9 @@
 import numpy as np
-
 from ares import AresBot
-from ares.behaviors.combat.individual import KeepUnitSafe
-from ares.consts import UnitTreeQueryType, UnitRole
+from ares.behaviors.combat.individual import KeepUnitSafe, PathUnitToTarget
+from ares.consts import UnitRole, UnitTreeQueryType
 from ares.managers.squad_manager import UnitSquad
+from cython_extensions.geometry import cy_distance_to_squared
 from cython_extensions.units_utils import cy_closest_to
 from sc2.position import Point2
 from sc2.unit import Unit
@@ -80,23 +80,32 @@ class ProbeRush(OpeningBase):
             )
 
         grid: np.ndarray = self.ai.mediator.get_ground_grid
+        mf: Unit = cy_closest_to(self.ai.start_location, self.ai.mineral_field)
         for worker in self.ai.mediator.get_units_from_role(
             role=UnitRole.CONTROL_GROUP_ONE
         ):
-            if not self.ai.mediator.is_position_safe(
-                grid=grid, position=worker.position
-            ):
-                self.ai.register_behavior(KeepUnitSafe(unit=worker, grid=grid))
-            elif not worker.is_gathering:
-                worker.gather(
-                    cy_closest_to(self.ai.start_location, self.ai.mineral_field)
+            nearby_friendlies: list[Unit] = [
+                w
+                for w in self.ai.workers
+                if cy_distance_to_squared(w.position, worker.position) < 7.5
+                and w.tag != worker.tag
+            ]
+
+            if len(nearby_friendlies) > 4:
+                worker.gather(mf)
+
+            else:
+                self.ai.register_behavior(
+                    PathUnitToTarget(
+                        unit=worker, grid=grid, target=self.ai.game_info.map_center
+                    )
                 )
 
     def _opening_specific_settings(self):
         if self.ai.build_order_runner.chosen_opening == "MightBeAWorkerRush":
             self._keep_assigning = False
             self._max_probes_in_attack = 9
-            self._start_attack_at_time = 5.0
+            self._start_attack_at_time = 9.0
 
     def _assign_workers(self):
         if not self._initial_assignment:

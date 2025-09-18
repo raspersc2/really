@@ -66,7 +66,10 @@ class OpeningBase(metaclass=ABCMeta):
             return cy_closest_to(self.ai.start_location, enemy_structures).position
         elif enemy_units:
             return cy_closest_to(self.ai.start_location, enemy_units).position
-        elif self.ai.time < 150.0 or self.ai.state.visibility[self.ai.enemy_start_locations[0].rounded] == 0:
+        elif (
+            self.ai.time < 150.0
+            or self.ai.state.visibility[self.ai.enemy_start_locations[0].rounded] == 0
+        ):
             return self.ai.enemy_start_locations[0]
         else:
             # cycle through base locations
@@ -85,17 +88,20 @@ class OpeningBase(metaclass=ABCMeta):
         if available_nexuses := [
             th for th in self.ai.townhalls if th.energy >= 50 and th.is_ready
         ]:
-            if targets := [
-                s
-                for s in self.ai.structures
-                if s.is_ready
-                and s.type_id in target_structures
-                and not s.is_idle
-                and not s.has_buff(BuffId.CHRONOBOOSTENERGYCOST)
-                and s.orders
-                and s.orders[0].progress < 0.7
-                and s.is_powered
-            ]:
+            if targets := sorted(
+                [
+                    s
+                    for s in self.ai.structures
+                    if s.is_ready
+                    and s.type_id in target_structures
+                    and not s.is_idle
+                    and not s.has_buff(BuffId.CHRONOBOOSTENERGYCOST)
+                    and s.orders
+                    and s.orders[0].progress < 0.7
+                    and s.is_powered
+                ],
+                key=lambda x: x.orders[0].progress,
+            ):
                 target = targets[0]
                 available_nexuses[0](AbilityId.EFFECT_CHRONOBOOSTENERGYCOST, target)
 

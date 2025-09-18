@@ -17,6 +17,7 @@ to use it as a resource or inspiration when creating your own bot.
 
 The following builds are available (with the possibility of more later):
 - ProxyNexus
+- MightBeAWorkerRush
 - ProxyZealot
 - ProxyZealotWithProbes
 - ProbeRush

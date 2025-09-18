@@ -1,10 +1,9 @@
-from sc2.data import Race
-
 from ares import AresBot
 from ares.behaviors.macro import AutoSupply, BuildWorkers, MacroPlan, SpawnController
 from ares.consts import UnitRole
 from cython_extensions import cy_distance_to_squared, cy_towards
 from cython_extensions.units_utils import cy_closest_to
+from sc2.data import Race
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
@@ -64,6 +63,7 @@ class ProxyNexus(OpeningBase):
             (
                 len(self.ai.townhalls) > 1
                 and all(th.build_progress > 0.95 for th in self.ai.townhalls)
+                and self.ai.time > 144.0
             )
             or self.ai.time > 180.0
         ):
@@ -105,28 +105,29 @@ class ProxyNexus(OpeningBase):
             )
             if self.ai.supply_used < 25:
                 macro_plan.add(AutoSupply(self.ai.start_location))
-            macro_plan.add(BuildWorkers(17))
+            # macro_plan.add(BuildWorkers(17))
             self.ai.register_behavior(macro_plan)
 
     async def _micro(self) -> None:
         for worker in self.ai.workers:
             self.ai.mediator.assign_role(tag=worker.tag, role=UnitRole.ATTACKING)
 
-        enough_to_recall: bool = (
-            len(
-                [
-                    u
-                    for u in self.ai.units
-                    if cy_distance_to_squared(u.position, self._recall_meetup_point)
-                    < 42.25
-                ]
-            )
-            >= len(self.ai.units) * 0.92
-        )
         if not self._recall_complete:
             # just incase something goes wrong
             if self.ai.time > 185.0:
                 self._recall_complete = True
+
+            enough_to_recall: bool = (
+                len(
+                    [
+                        u
+                        for u in self.ai.units
+                        if cy_distance_to_squared(u.position, self._recall_meetup_point)
+                        < 15.0
+                    ]
+                )
+                >= len(self.ai.units) * 0.97
+            )
 
             if enough_to_recall and self.ai.townhalls:
                 nexus: Unit = cy_closest_to(self._proxy_location, self.ai.townhalls)
@@ -134,7 +135,10 @@ class ProxyNexus(OpeningBase):
                     nexus(AbilityId.EFFECT_MASSRECALL_NEXUS, self._recall_meetup_point)
                     self._recall_complete = True
             for unit in self.ai.units:
-                unit.move(self._recall_meetup_point)
+                if unit.is_carrying_resource:
+                    unit.return_resource()
+                else:
+                    unit.move(self._recall_meetup_point)
         else:
             await self.probe_rush.on_step()
             target: Point2 = self.attack_target
@@ -173,3 +177,7 @@ class ProxyNexus(OpeningBase):
         if unit.type_id == UnitTypeId.NEXUS:
             self._start_attack = True
             self._recall_complete = True
+
+    def on_unit_created(self, unit: Unit) -> None:
+        if unit.type_id == UnitTypeId.ZEALOT:
+            unit.move(self._recall_meetup_point)

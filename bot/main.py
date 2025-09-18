@@ -1,20 +1,25 @@
 import importlib
 from typing import Any, Optional
 
-from sc2.data import Race
-from src.ares.consts import UnitRole
-
 from ares import AresBot
 from ares.behaviors.macro import Mining
+from sc2.data import Race
 from sc2.unit import Unit
+from src.ares.consts import UnitRole
 
 
 def _to_snake(name: str) -> str:
     # Convert e.g. "OneBaseTempest" -> "one_base_tempest"
     out = []
     for i, c in enumerate(name):
-        if c.isupper() and i and not name[i - 1].isupper():
-            out.append("_")
+        if i > 0:
+            prev = name[i - 1]
+            nxt = name[i + 1] if i + 1 < len(name) else ""
+            if c.isupper() and (
+                (not prev.isupper())  # lower->Upper
+                or (prev.isupper() and nxt and not nxt.isupper())  # UPPER->UpperLower
+            ):
+                out.append("_")
         out.append(c.lower())
     return "".join(out)
 
