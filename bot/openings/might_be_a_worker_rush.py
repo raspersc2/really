@@ -10,7 +10,11 @@ from ares.behaviors.macro import (
     UpgradeController,
 )
 from cython_extensions import cy_distance_to_squared
-from cython_extensions.general_utils import cy_pylon_matrix_covers, cy_unit_pending
+from cython_extensions.general_utils import (
+    cy_pylon_matrix_covers,
+    cy_unit_pending,
+    cy_has_creep,
+)
 from sc2.ids.unit_typeid import UnitTypeId
 from sc2.ids.upgrade_id import UpgradeId
 from sc2.position import Point2
@@ -58,16 +62,14 @@ class MightBeAWorkerRush(OpeningBase):
     async def on_step(self) -> None:
         await self.probe_rush.on_step()
 
-        target: Point2 = self.attack_target
-        for dt in self.ai.mediator.get_own_army_dict[UnitTypeId.DARKTEMPLAR]:
-            dt.attack(target)
-
         next_item_to_build: UnitTypeId | None = None
         if not self._proxy_finished:
             next_item_to_build = self._next_build_target(
                 self._proxy_plan, self._proxy_location
             )
-        if not next_item_to_build:
+        if not next_item_to_build or cy_has_creep(
+            self.ai.state.creep.data_numpy, self._proxy_location
+        ):
             self._proxy_finished = True
         max_workers: int = 0 if self._proxy_finished else 1
         proxy_probe_building: bool = False

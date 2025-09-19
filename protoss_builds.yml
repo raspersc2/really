@@ -90,13 +90,14 @@ Builds:
         OpeningBuildOrder:
             - 12 chrono @ nexus
             - 15 pylon @ ramp
-            - 18 gate @ ramp
-            - 16 chrono @ nexus
-            - 20 core @ ramp
+            - 15 chrono @ nexus
+            - 17 gate @ ramp
+            - 17 core @ ramp
             - 17 gas
             - 17 gateway
             - 17 warpgateresearch
             - 17 chrono @ core
+            - 17 gas
 
     ProxyVoids:
         ConstantWorkerProductionTill: 0

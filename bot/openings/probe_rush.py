@@ -121,7 +121,7 @@ class ProbeRush(OpeningBase):
 
         else:
             for worker in self.ai.workers:
-                if self._keep_assigning:
+                if self._keep_assigning and worker.tag not in self._low_shield_tags:
                     self.ai.mediator.assign_role(
                         tag=worker.tag, role=UnitRole.ATTACKING
                     )
