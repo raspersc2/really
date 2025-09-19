@@ -21,8 +21,6 @@ class ProxyZealotWithProbes(OpeningBase):
         await self.proxy_zealot.on_start(ai)
 
     async def on_step(self) -> None:
-        if self.ai.supply_used < 1:
-            await self.ai.client.leave()
         if not self._worker_rush_activated:
             zealots = self.ai.mediator.get_own_army_dict[UnitTypeId.ZEALOT]
             if (len(zealots) + cy_unit_pending(self.ai, UnitTypeId.ZEALOT)) >= 3:

@@ -62,6 +62,8 @@ class MyBot(AresBot):
 
     async def on_step(self, iteration: int) -> None:
         await super(MyBot, self).on_step(iteration)
+        if self.supply_used < 1:
+            await self.client.leave()
         self.register_behavior(Mining())
 
         if not self._switched_to_prevent_tie and self.floating_enemy:
