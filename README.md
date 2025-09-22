@@ -24,6 +24,7 @@ The following builds are available (with the possibility of more later):
 - OneBaseTempest
 - ProxyVoids
 - Carriers
+- ProxyZealotInMain
 
 ## testing
 This bot can be downloaded and used for testing via the [local play bootstrap docker image](https://github.com/aiarena/local-play-bootstrap).

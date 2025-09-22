@@ -18,7 +18,7 @@ BuildChoices:
     test_123:
         BotName: Test
         Cycle:
-            - ProxyZealotInMain
+            - Carriers
 
     Protoss:
         BotName: ProtossRace
@@ -31,6 +31,7 @@ BuildChoices:
             - OneBaseTempest
             - ProxyVoids
             - Carriers
+            - ProxyZealotInMain
 
     Random:
         BotName: RandomRace
@@ -43,6 +44,7 @@ BuildChoices:
             - OneBaseTempest
             - ProxyVoids
             - Carriers
+            - ProxyZealotInMain
 
     Terran:
         BotName: TerranRace
@@ -55,6 +57,7 @@ BuildChoices:
             - OneBaseTempest
             - ProxyVoids
             - Carriers
+            - ProxyZealotInMain
 
     Zerg:
         BotName: ZergRace
@@ -67,6 +70,7 @@ BuildChoices:
             - OneBaseTempest
             - ProxyVoids
             - Carriers
+            - ProxyZealotInMain
 
 Builds:
     Carriers:
@@ -74,15 +78,27 @@ Builds:
         AutoSupplyAtSupply: 44
         OpeningBuildOrder:
             - 14 pylon @ ramp
-            - 15 gate @ ramp
+            - 15 forge @ ramp
             - 15 chrono @ nexus
+            - 17 gateway @ ramp
             - 17 gas
-            - 19 core @ ramp
-            - 19 gas
-            - 19 pylon
-            - 19 chrono @ nexus
-            - 19 nexus
-            - 19 stargate
+            - 16 pylon @ ramp
+            - 16 photoncannon @ ramp *2
+            - 16 core
+            - 16 gas
+            - 16 nexus
+            - 16 stargate
+            - 16 pylon @ nat *2
+            - 16 photoncannon @ nat
+            - 16 fleetbeacon
+            - 16 photoncannon @ nat
+            - 16 pylon @ nat
+            - 16 carrier
+            - 16 chrono @ stargate
+            - 16 shieldbattery
+            - 16 shieldbattery @ nat *2
+            - 16 photoncannon @ nat *2
+            - 16 carrier
 
     MightBeAWorkerRush:
         ConstantWorkerProductionTill: 36
@@ -151,6 +167,7 @@ Builds:
             - 15 chrono @ nexus
             - 17 gateway @ ramp
             - 17 gas
+            - 16 pylon @ ramp
             - 16 photoncannon @ ramp *2
             - 16 gas
             - 16 pylon

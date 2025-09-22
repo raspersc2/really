@@ -47,7 +47,7 @@ class Carriers(OpeningBase):
         if not self.ai.build_order_runner.build_completed:
             return
 
-        if not self._aggressive and self.ai.supply_used > 170:
+        if not self._aggressive and (self.ai.supply_used > 170 or self.ai.time > 900.0):
             self._aggressive = True
 
         target: Point2 = self.ai.mediator.get_own_nat
@@ -94,7 +94,7 @@ class Carriers(OpeningBase):
         macro_plan.add(GasBuildingController(to_count=100, max_pending=2))
         # observers
         if (
-            self.ai.time > 200.0
+            self.ai.supply_used > 120
             and len(self.ai.mediator.get_own_army_dict[UnitTypeId.OBSERVER])
             + self.ai.unit_pending(UnitTypeId.OBSERVER)
             < 1
