@@ -34,7 +34,6 @@ class ProbeRush(OpeningBase):
         self._opening_specific_settings()
 
     async def on_step(self) -> None:
-
         if not self.attack_commenced:
             if self.ai.time >= self._start_attack_at_time:
                 self.attack_commenced = True
@@ -105,6 +104,9 @@ class ProbeRush(OpeningBase):
             self._keep_assigning = False
             self._max_probes_in_attack = 9
             self._start_attack_at_time = 9.0
+        elif self.ai.build_order_runner.chosen_opening == "ProxyZealotWithProbes":
+            self._keep_assigning = False
+            self._max_probes_in_attack = 12
 
     def _assign_workers(self):
         if not self._initial_assignment:
@@ -130,7 +132,7 @@ class ProbeRush(OpeningBase):
                     self.ai.mediator.assign_role(
                         tag=worker.tag, role=UnitRole.CONTROL_GROUP_ONE
                     )
-                elif worker.tag in self._low_shield_tags and shield_perc > 0.9:
+                elif worker.tag in self._low_shield_tags and shield_perc >= 0.4:
                     self._low_shield_tags.remove(worker.tag)
                     self.ai.mediator.assign_role(
                         tag=worker.tag, role=UnitRole.ATTACKING

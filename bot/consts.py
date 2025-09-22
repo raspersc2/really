@@ -41,8 +41,7 @@ PROXY_ZEALOT_PLAN: list[tuple[UnitTypeId, int]] = [
 ]
 
 PROXY_ZEALOT_PLAN_3G: list[tuple[UnitTypeId, int]] = [
-    (UnitTypeId.PYLON, 2),
-    (UnitTypeId.GATEWAY, 1),
     (UnitTypeId.PYLON, 1),
-    (UnitTypeId.GATEWAY, 2),
+    (UnitTypeId.GATEWAY, 3),
+    (UnitTypeId.PYLON, 1),
 ]
