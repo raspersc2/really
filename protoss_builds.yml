@@ -18,7 +18,7 @@ BuildChoices:
     test_123:
         BotName: Test
         Cycle:
-            - MightBeAWorkerRush
+            - ProxyZealotInMain
 
     Protoss:
         BotName: ProtossRace
@@ -114,7 +114,6 @@ Builds:
             - 16 core @ ramp
 
     ProxyNexus:
-        # Build constant workers till x supply
         ConstantWorkerProductionTill: 18
         OpeningBuildOrder:
             - 14 pylon @ ramp
@@ -122,19 +121,21 @@ Builds:
             - 16 gate @ ramp
 
     ProxyZealot:
-        # Build constant workers till x supply
         ConstantWorkerProductionTill: 0
         OpeningBuildOrder:
             - 12 probe *3
 
+    ProxyZealotInMain:
+      ConstantWorkerProductionTill: 0
+      OpeningBuildOrder:
+        - 12 probe *3
+
     ProxyZealotWithProbes:
-        # Build constant workers till x supply
         ConstantWorkerProductionTill: 0
         OpeningBuildOrder:
             - 12 probe *3
 
     ProbeRush:
-        # Build constant workers till x supply
         ConstantWorkerProductionTill: 22
         OpeningBuildOrder:
             - 12 worker

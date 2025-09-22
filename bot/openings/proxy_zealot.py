@@ -30,7 +30,10 @@ class ProxyZealot(OpeningBase):
         self._proxy_location = self._calculate_proxy_location()
         self._primary_builder_tag = 0
         self._current_build_location = None
-        if self.ai.build_order_runner.chosen_opening == "ProxyZealot":
+        if self.ai.build_order_runner.chosen_opening in {
+            "ProxyZealot",
+            "ProxyZealotInMain",
+        }:
             self._proxy_plan = PROXY_ZEALOT_PLAN
         else:
             self._proxy_plan = PROXY_ZEALOT_PLAN_3G
@@ -66,8 +69,7 @@ class ProxyZealot(OpeningBase):
 
         target: Point2 = self.attack_target
         for z in self.ai.mediator.get_own_army_dict[UnitTypeId.ZEALOT]:
-            if z.is_idle:
-                z.attack(target)
+            z.attack(target)
 
     async def _handle_proxy_zealot_construction(self, proxy_probes: Units) -> None:
         if not self._primary_builder_tag and proxy_probes:
@@ -107,20 +109,23 @@ class ProxyZealot(OpeningBase):
             self._primary_builder_tag = 0
 
     def _calculate_proxy_location(self):
-        if path := self.ai.mediator.find_raw_path(
+        enemy_main_proxy_loc: Point2 = Point2(
+            cy_towards(
+                self.ai.mediator.get_primary_nydus_enemy_main,
+                self.ai.enemy_start_locations[0],
+                2.0,
+            )
+        )
+        if self.ai.build_order_runner.chosen_opening == "ProxyZealotInMain":
+            return enemy_main_proxy_loc
+        elif path := self.ai.mediator.find_raw_path(
             start=self.ai.mediator.get_own_nat,
             target=self.ai.mediator.get_enemy_nat,
             grid=self.ai.mediator.get_ground_grid,
             sensitivity=1,
         ):
             if len(path) <= PATH_THRESHOLD:
-                return Point2(
-                    cy_towards(
-                        self.ai.mediator.get_primary_nydus_enemy_main,
-                        self.ai.enemy_start_locations[0],
-                        2.0,
-                    )
-                )
+                return enemy_main_proxy_loc
             else:
                 if path := self.ai.mediator.find_raw_path(
                     start=self.ai.mediator.get_enemy_nat,
