@@ -74,20 +74,21 @@ BuildChoices:
 
 Builds:
     Carriers:
-        ConstantWorkerProductionTill: 23
+        ConstantWorkerProductionTill: 44
         AutoSupplyAtSupply: 44
         OpeningBuildOrder:
             - 14 pylon @ ramp
             - 15 forge @ ramp
             - 15 chrono @ nexus
             - 17 gateway @ ramp
-            - 17 gas
             - 16 pylon @ ramp
-            - 16 photoncannon @ ramp *2
+            - 16 photoncannon @ ramp
+            - 16 gas
             - 16 core
             - 16 gas
             - 16 nexus
             - 16 stargate
+            - 16 photoncannon @ ramp
             - 16 pylon @ nat *2
             - 16 photoncannon @ nat
             - 16 fleetbeacon
@@ -95,10 +96,11 @@ Builds:
             - 16 pylon @ nat
             - 16 carrier
             - 16 chrono @ stargate
+            - 16 gas *2
             - 16 shieldbattery
-            - 16 shieldbattery @ nat *2
+            - 16 shieldbattery @ nat
+            - 16 stargate
             - 16 photoncannon @ nat *2
-            - 16 carrier
 
     MightBeAWorkerRush:
         ConstantWorkerProductionTill: 36
