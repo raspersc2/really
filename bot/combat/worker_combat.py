@@ -13,7 +13,6 @@ from ares.behaviors.combat.individual import (
 from ares.consts import ALL_STRUCTURES
 from ares.managers.manager_mediator import ManagerMediator
 from cython_extensions import cy_closest_to
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
@@ -22,14 +21,6 @@ from bot.combat.base_combat import BaseCombat
 
 if TYPE_CHECKING:
     from ares import AresBot
-
-DANGER_TO_AIR: set[UnitID] = {
-    UnitID.VOIDRAY,
-    UnitID.PHOTONCANNON,
-    UnitID.MISSILETURRET,
-    UnitID.SPORECRAWLER,
-    UnitID.BUNKER,
-}
 
 
 @dataclass

@@ -45,6 +45,17 @@ class OneBaseTempest(OpeningBase):
         if self.ai.build_order_runner.build_completed:
             self._do_tempest_macro_plan()
             self._handle_chrono_boosts()
+        else:
+            self.ai.register_behavior(
+                SpawnController(
+                    army_composition_dict={
+                        UnitID.ZEALOT: {"proportion": 0.5, "priority": 1}
+                    },
+                    freeflow_mode=True,
+                )
+            )
+            if self.ai.supply_workers >= 16:
+                self.ai.register_behavior(BuildWorkers(22))
 
         # micro
         squads: list[UnitSquad] = self.ai.mediator.get_squads(
@@ -65,13 +76,19 @@ class OneBaseTempest(OpeningBase):
                 target=self.attack_target,
             )
 
+        for z in self.ai.mediator.get_own_army_dict[UnitID.ZEALOT]:
+            z.attack(self.attack_target)
+
     def _do_tempest_macro_plan(self):
         # Set up macro plan to keep producing Tempests once tech is ready.
         self._macro_plan = MacroPlan()
         self._macro_plan.add(AutoSupply(self.ai.start_location))
         self._macro_plan.add(BuildWorkers(min(80, 22 * self.ai.townhalls.amount)))
 
-        army_comp = {UnitID.TEMPEST: {"proportion": 1.0, "priority": 0}}
+        army_comp = {
+            UnitID.TEMPEST: {"proportion": 0.9, "priority": 0},
+            UnitID.ZEALOT: {"proportion": 0.1, "priority": 1},
+        }
         self._macro_plan.add(
             SpawnController(army_composition_dict=army_comp, freeflow_mode=True)
         )

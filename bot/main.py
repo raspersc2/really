@@ -96,7 +96,7 @@ class MyBot(AresBot):
     async def on_unit_took_damage(self, unit: Unit, amount_damage_taken: float) -> None:
         await super(MyBot, self).on_unit_took_damage(unit, amount_damage_taken)
 
-        compare_health: float = max(50.0, unit.health_max * 0.09)
+        compare_health: float = max(50.0, (unit.health_max + unit.shield_max) * 0.09)
         if unit.health < compare_health:
             self.mediator.cancel_structure(structure=unit)
             if self.opening_handler and hasattr(

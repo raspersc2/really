@@ -18,7 +18,7 @@ BuildChoices:
     test_123:
         BotName: Test
         Cycle:
-            - Carriers
+            - OneBaseTempest
 
     Protoss:
         BotName: ProtossRace
@@ -161,32 +161,26 @@ Builds:
             - 12 worker *2
 
     OneBaseTempest:
-        ConstantWorkerProductionTill: 22
+        ConstantWorkerProductionTill: 0
         AutoSupplyAtSupply: 22
         OpeningBuildOrder:
-            - 14 pylon @ ramp
-            - 15 forge @ ramp
-            - 15 chrono @ nexus
-            - 17 gateway @ ramp
-            - 17 gas
-            - 16 pylon @ ramp
-            - 16 photoncannon @ ramp *2
-            - 16 gas
-            - 16 pylon
-            - 16 core
-            - 16 photoncannon @ ramp
-            - 16 pylon
+            - 12 pylon @ ramp
+            - 12 probe
+            - 13 gate @ ramp
+            - 13 probe
+            - 13 chrono @ nexus
+            - 13 probe
+            - 15 gas *2
+            - 15 probe
+            - 16 core @ ramp
             - 16 stargate
-            - 16 photoncannon @ ramp *2
+            - 16 shieldbattery @ ramp
             - 16 fleetbeacon
-            - 16 photoncannon
             - 16 pylon *2
             - 16 tempest
             - 16 chrono @ stargate
             - 16 pylon
             - 16 tempestgroundattackupgrade
-            - 16 photoncannon
-            - 16 shieldbattery
 
 
 

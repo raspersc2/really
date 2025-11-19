@@ -50,7 +50,7 @@ class ProbeProxyBuilder(BaseCombat):
         primary_builder_tag: int = kwargs["primary_builder_tag"]
         next_item_to_build: UnitTypeId | None = kwargs["next_item_to_build"]
         build_location: Point2 | None = kwargs["build_location"]
-        avoid_grid: np.ndarray = self.mediator.get_air_avoidance_grid
+        avoid_grid: np.ndarray = self.mediator.get_ground_avoidance_grid
         grid: np.ndarray = self.mediator.get_ground_grid
         ability_id: AbilityId | None = None
         if next_item_to_build:
