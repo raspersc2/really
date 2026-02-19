@@ -57,7 +57,14 @@ class ProbeRush(OpeningBase):
 
             if len(nearby_friendlies) > 4:
                 worker.gather(mf)
-
+            elif not self.ai.mediator.is_position_safe(
+                grid=grid, position=worker.position
+            ):
+                worker.move(
+                    self.ai.mediator.find_closest_safe_spot(
+                        from_pos=worker.position, grid=grid
+                    )
+                )
             else:
                 self.ai.register_behavior(
                     PathUnitToTarget(
