@@ -48,14 +48,14 @@ class ProbeRush(OpeningBase):
             role=UnitRole.CONTROL_GROUP_ONE
         )
         for worker in low_shields:
-            nearby_friendlies: list[Unit] = [
+            nearby_units: list[Unit] = [
                 w
-                for w in self.ai.workers
+                for w in self.ai.all_units
                 if cy_distance_to_squared(w.position, worker.position) < 7.5
                 and w.tag != worker.tag
             ]
 
-            if len(nearby_friendlies) > 4:
+            if len(nearby_units) >= 4:
                 worker.gather(mf)
             elif not self.ai.mediator.is_position_safe(
                 grid=grid, position=worker.position
