@@ -1,7 +1,7 @@
 from ares import AresBot, UnitRole
 from ares.behaviors.macro import AutoSupply, BuildWorkers, MacroPlan, SpawnController
 from ares.managers.squad_manager import UnitSquad
-from cython_extensions import cy_closest_to, cy_distance_to_squared
+from cython_extensions import cy_closest_to, cy_distance_to_squared, cy_unit_pending
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
@@ -12,7 +12,7 @@ from src.ares.consts import UnitTreeQueryType
 from bot.combat.air_combat import AirCombat
 from bot.combat.base_combat import BaseCombat
 from bot.combat.probe_proxy_builder import ProbeProxyBuilder
-from bot.consts import COMMON_UNIT_IGNORE_TYPES, PROXY_VOID_PLAN
+from bot.consts import COMMON_UNIT_IGNORE_TYPES, PROXY_VOID_PLAN, PROXY_VOID_PLAN_B
 from bot.openings.opening_base import OpeningBase
 
 
@@ -42,6 +42,11 @@ class ProxyVoids(OpeningBase):
         self.void_combat = AirCombat(ai, ai.config, ai.mediator)
 
     async def on_step(self) -> None:
+        if cy_unit_pending(self.ai, UnitTypeId.VOIDRAY):
+            self._proxy_plan = PROXY_VOID_PLAN
+        else:
+            self._proxy_plan = PROXY_VOID_PLAN_B
+
         if not self._begin_proxy_construction and [
             s
             for s in self.ai.mediator.get_own_structures_dict[UnitTypeId.GATEWAY]

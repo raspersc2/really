@@ -1,6 +1,7 @@
 import numpy as np
 from ares import AresBot
 from ares.behaviors.combat.individual import KeepUnitSafe, PathUnitToTarget
+from ares.behaviors.macro import BuildWorkers
 from ares.consts import UnitRole, UnitTreeQueryType
 from ares.managers.squad_manager import UnitSquad
 from cython_extensions.geometry import cy_distance_to_squared
@@ -27,6 +28,7 @@ class ProbeRush(OpeningBase):
         self._max_probes_in_attack: int = 200
         self._keep_assigning: bool = True
         self._stack_for: float = 1.85
+        self._build_workers: bool = True
 
     async def on_start(self, ai: AresBot) -> None:
         await super().on_start(ai)
@@ -40,6 +42,9 @@ class ProbeRush(OpeningBase):
             return
 
         self._assign_workers()
+
+        if self._build_workers:
+            self.ai.register_behavior(BuildWorkers(200))
 
         # micro
         grid: np.ndarray = self.ai.mediator.get_ground_grid
@@ -111,9 +116,11 @@ class ProbeRush(OpeningBase):
             self._keep_assigning = False
             self._max_probes_in_attack = 9
             self._start_attack_at_time = 9.0
+            self._build_workers = False
         elif self.ai.build_order_runner.chosen_opening == "ProxyZealotWithProbes":
             self._keep_assigning = False
             self._max_probes_in_attack = 12
+            self._build_workers = False
 
     def _assign_workers(self):
         if not self._initial_assignment:

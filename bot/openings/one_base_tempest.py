@@ -85,10 +85,15 @@ class OneBaseTempest(OpeningBase):
         self._macro_plan.add(AutoSupply(self.ai.start_location))
         self._macro_plan.add(BuildWorkers(min(80, 22 * self.ai.townhalls.amount)))
 
-        army_comp = {
-            UnitID.TEMPEST: {"proportion": 0.9, "priority": 0},
-            UnitID.ZEALOT: {"proportion": 0.1, "priority": 1},
-        }
+        if self.ai.build_order_runner.chosen_opening == "OneBaseTempest":
+            army_comp = {
+                UnitID.TEMPEST: {"proportion": 0.9, "priority": 0},
+                UnitID.ZEALOT: {"proportion": 0.1, "priority": 1},
+            }
+        else:
+            army_comp = {
+                UnitID.TEMPEST: {"proportion": 1.0, "priority": 0},
+            }
         self._macro_plan.add(
             SpawnController(army_composition_dict=army_comp, freeflow_mode=True)
         )

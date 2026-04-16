@@ -1,6 +1,8 @@
 import importlib
 from typing import Any, Optional
 
+from loguru import logger
+
 from ares import AresBot
 from ares.behaviors.macro import Mining
 from sc2.data import Race
@@ -38,6 +40,7 @@ class MyBot(AresBot):
         self.opening_handler: Optional[Any] = None
         self.opening_chat_tag: bool = False
         self._switched_to_prevent_tie: bool = False
+        self._switched_due_to_worker_rush: bool = False
 
     def load_opening(self, opening_name: str) -> None:
         """Load opening from bot.openings.<snake_case> with class <PascalCase>"""
@@ -73,6 +76,13 @@ class MyBot(AresBot):
                 await self.opening_handler.on_start(self)
             for worker in self.workers:
                 self.mediator.assign_role(tag=worker.tag, role=UnitRole.GATHERING)
+            logger.info(f"{self.time_formatted} - Switched to preventing tie")
+
+        if not self._switched_due_to_worker_rush and self.mediator.get_enemy_worker_rushed:
+            self.load_opening("ProbeRush")
+            if hasattr(self.opening_handler, "on_start"):
+                await self.opening_handler.on_start(self)
+            self._switched_due_to_worker_rush = True
 
         if self.opening_handler and hasattr(self.opening_handler, "on_step"):
             await self.opening_handler.on_step()

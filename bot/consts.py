@@ -31,6 +31,12 @@ PROXY_VOID_PLAN: list[tuple[UnitTypeId, int]] = [
     (UnitTypeId.SHIELDBATTERY, 9),
 ]
 
+PROXY_VOID_PLAN_B: list[tuple[UnitTypeId, int]] = [
+    (UnitTypeId.PYLON, 2),
+    (UnitTypeId.STARGATE, 1),
+    (UnitTypeId.PYLON, 2),
+]
+
 PROXY_ZEALOT_PLAN: list[tuple[UnitTypeId, int]] = [
     (UnitTypeId.PYLON, 2),
     (UnitTypeId.GATEWAY, 1),
