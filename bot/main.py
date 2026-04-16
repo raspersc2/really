@@ -80,6 +80,8 @@ class MyBot(AresBot):
 
         if not self._switched_due_to_worker_rush and self.mediator.get_enemy_worker_rushed:
             self.load_opening("ProbeRush")
+            self.build_order_runner.set_build_completed()
+            self.mediator.get_building_tracker_dict.clear()
             if hasattr(self.opening_handler, "on_start"):
                 await self.opening_handler.on_start(self)
             self._switched_due_to_worker_rush = True
