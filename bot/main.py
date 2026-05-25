@@ -78,7 +78,10 @@ class MyBot(AresBot):
                 self.mediator.assign_role(tag=worker.tag, role=UnitRole.GATHERING)
             logger.info(f"{self.time_formatted} - Switched to preventing tie")
 
-        if not self._switched_due_to_worker_rush and self.mediator.get_enemy_worker_rushed:
+        if (
+            not self._switched_due_to_worker_rush
+            and self.mediator.get_enemy_worker_rushed
+        ):
             self.load_opening("ProbeRush")
             self.build_order_runner.set_build_completed()
             self.mediator.get_building_tracker_dict.clear()

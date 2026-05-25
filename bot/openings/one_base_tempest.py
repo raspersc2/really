@@ -131,12 +131,17 @@ class OneBaseTempest(OpeningBase):
             if available_nexuses := [
                 th for th in self.ai.townhalls if th.energy >= 50 and th.is_ready
             ]:
+                target = (
+                    UnitID.GATEWAY
+                    if self.ai.mediator.get_did_enemy_rush
+                    else UnitID.STARGATE
+                )
                 if targets := [
                     s
                     for s in self.ai.structures
                     if s.is_ready
                     and not s.is_idle
-                    and s.type_id == UnitID.STARGATE
+                    and s.type_id == target
                     and not s.has_buff(BuffId.CHRONOBOOSTENERGYCOST)
                     and s.orders
                     and s.orders[0].progress < 0.4

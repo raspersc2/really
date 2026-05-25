@@ -39,10 +39,7 @@ class ProxyZealot(OpeningBase):
             self._proxy_plan = PROXY_ZEALOT_PLAN_3G
 
     async def on_step(self) -> None:
-        if (
-            self._proxy_complete
-            or self.ai.build_order_runner.chosen_opening == "ProxyZealotWithProbes"
-        ):
+        if self._proxy_complete:
             self._max_proxy_workers = 1
         elif self.ai.time > 30.0:
             self._max_proxy_workers = 2
