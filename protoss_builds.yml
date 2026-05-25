@@ -18,7 +18,7 @@ BuildChoices:
     test_123:
         BotName: Test
         Cycle:
-            - OneBaseTempest
+            - ProxyVoids
 
     Protoss:
         BotName: ProtossRace
@@ -173,6 +173,7 @@ Builds:
             - 15 gas *2
             - 15 probe
             - 16 core @ ramp
+            - 16 pylon
             - 16 stargate
             - 16 shieldbattery @ ramp
             - 16 fleetbeacon
