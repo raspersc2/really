@@ -64,7 +64,11 @@ class ProxyZealot(OpeningBase):
         macro_plan.add(BuildWorkers(15))
         self.ai.register_behavior(macro_plan)
 
-        target: Point2 = self.attack_target
+        # lock target to enemy spawn for a while, to prevent distractions
+        if self.ai.time < 240.0:
+            target: Point2 = self.ai.enemy_start_locations[0]
+        else:
+            target: Point2 = self.attack_target
         for z in self.ai.mediator.get_own_army_dict[UnitTypeId.ZEALOT]:
             z.attack(target)
 

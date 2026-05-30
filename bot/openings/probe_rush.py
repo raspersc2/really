@@ -86,7 +86,11 @@ class ProbeRush(OpeningBase):
         pos_of_main_squad: Point2 = self.ai.mediator.get_position_of_main_squad(
             role=UnitRole.ATTACKING
         )
-
+        attack_target: Point2 = (
+            self.attack_target
+            if self.ai.time > 240.0
+            else self.ai.enemy_start_locations[0]
+        )
         for squad in squads:
             if self.ai.time < self._start_attack_at_time + self._stack_for:
                 mf: Unit = cy_closest_to(self.ai.start_location, self.ai.mineral_field)
@@ -97,9 +101,7 @@ class ProbeRush(OpeningBase):
                         unit.gather(mf)
                 continue
 
-            target: Point2 = (
-                self.attack_target if squad.main_squad else pos_of_main_squad
-            )
+            target: Point2 = attack_target if squad.main_squad else pos_of_main_squad
             close_ground_enemy: Units = self.ai.mediator.get_units_in_range(
                 start_points=[squad.squad_position],
                 distances=12.5,
