@@ -1,6 +1,10 @@
 import numpy as np
 from ares import AresBot
-from ares.behaviors.combat.individual import KeepUnitSafe, PathUnitToTarget
+from ares.behaviors.combat.individual import (
+    KeepUnitSafe,
+    PathUnitToTarget,
+    WorkerKiteBack,
+)
 from ares.behaviors.macro import BuildWorkers
 from ares.consts import UnitRole, UnitTreeQueryType
 from ares.managers.squad_manager import UnitSquad
@@ -48,7 +52,6 @@ class ProbeRush(OpeningBase):
 
         # micro
         grid: np.ndarray = self.ai.mediator.get_ground_grid
-        mf: Unit = cy_closest_to(self.ai.start_location, self.ai.mineral_field)
         low_shields: Units = self.ai.mediator.get_units_from_role(
             role=UnitRole.CONTROL_GROUP_ONE
         )
@@ -58,10 +61,13 @@ class ProbeRush(OpeningBase):
                 for w in self.ai.all_units
                 if cy_distance_to_squared(w.position, worker.position) < 7.5
                 and w.tag != worker.tag
+                and w.tag not in low_shields.tags
             ]
 
             if len(nearby_units) >= 4:
-                worker.gather(mf)
+                self.ai.register_behavior(
+                    WorkerKiteBack(worker, nearby_units[0], should_attack=False)
+                )
             elif not self.ai.mediator.is_position_safe(
                 grid=grid, position=worker.position
             ):
@@ -91,6 +97,7 @@ class ProbeRush(OpeningBase):
             if self.ai.time > 240.0
             else self.ai.enemy_start_locations[0]
         )
+
         for squad in squads:
             if self.ai.time < self._start_attack_at_time + self._stack_for:
                 mf: Unit = cy_closest_to(self.ai.start_location, self.ai.mineral_field)
@@ -100,8 +107,18 @@ class ProbeRush(OpeningBase):
                     else:
                         unit.gather(mf)
                 continue
-
-            target: Point2 = attack_target if squad.main_squad else pos_of_main_squad
+            if self.ai.time < 150.0 and (
+                flying_structures := [
+                    s
+                    for s in self.ai.enemy_structures
+                    if s.is_flying and not s.is_memory
+                ]
+            ):
+                target: Point2 = flying_structures[0].position
+            else:
+                target: Point2 = (
+                    attack_target if squad.main_squad else pos_of_main_squad
+                )
             close_ground_enemy: Units = self.ai.mediator.get_units_in_range(
                 start_points=[squad.squad_position],
                 distances=12.5,
@@ -114,7 +131,9 @@ class ProbeRush(OpeningBase):
             )
 
     def _opening_specific_settings(self):
-        if self.ai.build_order_runner.chosen_opening == "MightBeAWorkerRush":
+        if self.ai.build_order_runner.chosen_opening == "ProbeRush":
+            self.ai.client.game_step = 1
+        elif self.ai.build_order_runner.chosen_opening == "MightBeAWorkerRush":
             self._keep_assigning = False
             self._max_probes_in_attack = 9
             self._start_attack_at_time = 9.0
