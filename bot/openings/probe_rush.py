@@ -1,7 +1,6 @@
 import numpy as np
 from ares import AresBot
 from ares.behaviors.combat.individual import (
-    KeepUnitSafe,
     PathUnitToTarget,
     WorkerKiteBack,
 )
@@ -33,6 +32,7 @@ class ProbeRush(OpeningBase):
         self._keep_assigning: bool = True
         self._stack_for: float = 1.85
         self._build_workers: bool = True
+        self._enemy_walled_off: bool = False
 
     async def on_start(self, ai: AresBot) -> None:
         await super().on_start(ai)
@@ -44,6 +44,13 @@ class ProbeRush(OpeningBase):
             if self.ai.time >= self._start_attack_at_time:
                 self.attack_commenced = True
             return
+
+        if not self._enemy_walled_off and self.ai.state.game_loop % 20 == 0:
+            self._enemy_walled_off = self.ai.main_ramp_walled_off(
+                self.ai.mediator.get_enemy_ramp
+            )
+            if self._enemy_walled_off:
+                await self.ai.chat_send(f"Tag: {self.ai.time_formatted}: WallOff")
 
         self._assign_workers()
 
@@ -128,6 +135,7 @@ class ProbeRush(OpeningBase):
                 units=squad.squad_units,
                 all_close_enemy=close_ground_enemy,
                 target=target,
+                ramp_walled_off=self._enemy_walled_off,
             )
 
     def _opening_specific_settings(self):
