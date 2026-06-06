@@ -51,3 +51,10 @@ PROXY_ZEALOT_PLAN_3G: list[tuple[UnitTypeId, int]] = [
     (UnitTypeId.GATEWAY, 3),
     (UnitTypeId.PYLON, 1),
 ]
+
+SUPPLY_TYPES: set[UnitID] = {
+    UnitID.SUPPLYDEPOTLOWERED,
+    UnitID.SUPPLYDEPOT,
+    UnitID.PYLON,
+}
+
