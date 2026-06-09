@@ -130,9 +130,7 @@ class ProbeRush(OpeningBase):
             )
 
     def _opening_specific_settings(self):
-        if self.ai.build_order_runner.chosen_opening == "ProbeRush":
-            self.ai.client.game_step = 1
-        elif self.ai.build_order_runner.chosen_opening == "MightBeAWorkerRush":
+        if self.ai.build_order_runner.chosen_opening == "MightBeAWorkerRush":
             self._keep_assigning = False
             self._max_probes_in_attack = 9
             self._start_attack_at_time = 9.0
