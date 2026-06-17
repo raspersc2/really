@@ -139,6 +139,10 @@ class ProbeRush(OpeningBase):
             self._keep_assigning = False
             self._max_probes_in_attack = 12
             self._build_workers = False
+        elif self.ai.build_order_runner.chosen_opening == "ProbeRushFast":
+            self._keep_assigning = True
+            self._max_probes_in_attack = 15
+            self._start_attack_at_time = 0.0
 
     def _assign_workers(self):
         if not self._initial_assignment:

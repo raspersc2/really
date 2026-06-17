@@ -18,7 +18,7 @@ BuildChoices:
     test_123:
         BotName: Test
         Cycle:
-            - ProxyVoids
+            - ProbeRushFast
 
     Protoss:
         BotName: ProtossRace
@@ -29,6 +29,7 @@ BuildChoices:
             - ProxyZealotWithProbes
             - ProbeRush
             - OneBaseTempest
+            - ProbeRushFast
             - ProxyVoids
             - Carriers
             - ProxyZealotInMain
@@ -42,6 +43,7 @@ BuildChoices:
             - ProxyZealotWithProbes
             - ProbeRush
             - OneBaseTempest
+            - ProbeRushFast
             - ProxyVoids
             - Carriers
             - ProxyZealotInMain
@@ -55,6 +57,7 @@ BuildChoices:
             - ProxyZealotWithProbes
             - ProbeRush
             - OneBaseTempest
+            - ProbeRushFast
             - ProxyVoids
             - Carriers
             - ProxyZealotInMain
@@ -68,6 +71,7 @@ BuildChoices:
             - ProxyZealotWithProbes
             - ProbeRush
             - OneBaseTempest
+            - ProbeRushFast
             - ProxyVoids
             - Carriers
             - ProxyZealotInMain
@@ -159,6 +163,12 @@ Builds:
             - 12 worker
             - 12 chrono @ nexus
             - 12 worker *2
+
+    ProbeRushFast:
+        ConstantWorkerProductionTill: 22
+        OpeningBuildOrder:
+            - 12 worker
+            - 12 chrono @ nexus
 
     OneBaseTempest:
         ConstantWorkerProductionTill: 0
