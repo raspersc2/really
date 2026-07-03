@@ -143,6 +143,7 @@ class ProbeRush(OpeningBase):
             self._keep_assigning = True
             self._max_probes_in_attack = 15
             self._start_attack_at_time = 0.0
+            self._stack_for = 0.0
 
     def _assign_workers(self):
         if not self._initial_assignment:
