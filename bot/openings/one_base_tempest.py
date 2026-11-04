@@ -28,6 +28,8 @@ class OneBaseTempest(OpeningBase):
 
     def __init__(self):
         super().__init__()
+        # a wrapper can take zealots over, it can't unload ones being told to attack
+        self.controls_zealots: bool = True
 
     async def on_start(self, ai: AresBot) -> None:
         await super().on_start(ai)
@@ -76,13 +78,14 @@ class OneBaseTempest(OpeningBase):
                 target=self.attack_target,
             )
 
-        for z in self.ai.mediator.get_own_army_dict[UnitID.ZEALOT]:
-            z.attack(self.attack_target)
+        if self.controls_zealots:
+            for z in self.ai.mediator.get_own_army_dict[UnitID.ZEALOT]:
+                z.attack(self.attack_target)
 
     def _do_tempest_macro_plan(self):
         # Set up macro plan to keep producing Tempests once tech is ready.
         self._macro_plan = MacroPlan()
-        self._macro_plan.add(AutoSupply(self.ai.start_location))
+        self._macro_plan.add(AutoSupply(self._macro_location))
         self._macro_plan.add(BuildWorkers(min(80, 22 * self.ai.townhalls.amount)))
 
         if self.ai.build_order_runner.chosen_opening == "OneBaseTempest":
@@ -99,7 +102,7 @@ class OneBaseTempest(OpeningBase):
         )
         self._macro_plan.add(
             ProductionController(
-                army_composition_dict=army_comp, base_location=self.ai.start_location
+                army_composition_dict=army_comp, base_location=self._macro_location
             )
         )
 
@@ -118,7 +121,7 @@ class OneBaseTempest(OpeningBase):
                         UpgradeId.PROTOSSAIRWEAPONSLEVEL3,
                         UpgradeId.PROTOSSAIRARMORSLEVEL3,
                     ],
-                    self.ai.start_location,
+                    self._macro_location,
                 )
             )
 

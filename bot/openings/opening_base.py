@@ -48,6 +48,13 @@ class OpeningBase(metaclass=ABCMeta):
         return proxy_workers
 
     @property
+    def _macro_location(self) -> Point2:
+        """Our main, or whichever base is closest to it if the main has died."""
+        if self.ai.townhalls:
+            return cy_closest_to(self.ai.start_location, self.ai.townhalls).position
+        return self.ai.start_location
+
+    @property
     def attack_target(self) -> Point2:
         enemy_units: Units = self.ai.enemy_units.filter(
             lambda u: u.type_id not in ATTACK_TARGET_IGNORE

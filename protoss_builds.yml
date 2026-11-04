@@ -18,7 +18,7 @@ BuildChoices:
     test_123:
         BotName: Test
         Cycle:
-            - ProbeRushFast
+            - ProxyDarkShrine
 
     Protoss:
         BotName: ProtossRace
@@ -33,6 +33,7 @@ BuildChoices:
             - ProxyVoids
             - Carriers
             - ProxyZealotInMain
+            - ProxyDarkShrine
 
     Random:
         BotName: RandomRace
@@ -47,6 +48,7 @@ BuildChoices:
             - ProxyVoids
             - Carriers
             - ProxyZealotInMain
+            - ProxyDarkShrine
 
     Terran:
         BotName: TerranRace
@@ -61,6 +63,7 @@ BuildChoices:
             - ProxyVoids
             - Carriers
             - ProxyZealotInMain
+            - ProxyDarkShrine
 
     Zerg:
         BotName: ZergRace
@@ -75,6 +78,7 @@ BuildChoices:
             - ProxyVoids
             - Carriers
             - ProxyZealotInMain
+            - ProxyDarkShrine
 
 Builds:
     Carriers:
@@ -134,6 +138,25 @@ Builds:
             - 14 probe *2
             - 16 gas
             - 16 core @ ramp
+
+    ProxyDarkShrine:
+        ConstantWorkerProductionTill: 19
+        AutoSupplyAtSupply: 22
+        OpeningBuildOrder:
+            - 14 pylon @ ramp
+            - 15 gate @ ramp
+            - 15 chrono @ nexus
+            - 16 gas
+            - 17 gas
+            - 18 core @ ramp
+            - 19 pylon
+            - 19 gateway
+            - 19 warpgateresearch
+            - 19 chrono @ core
+            - 19 twilightcouncil
+            - 19 roboticsfacility
+            - 19 gateway
+            - 19 gateway
 
     ProxyNexus:
         ConstantWorkerProductionTill: 18

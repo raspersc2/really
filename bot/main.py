@@ -1,3 +1,4 @@
+import gc
 import importlib
 from typing import Any, Optional
 
@@ -62,6 +63,10 @@ class MyBot(AresBot):
                 await self.opening_handler.on_start(self)
         except Exception as exc:
             print(f"Failed to load opening: {exc}")
+        # the map data lives all game, without this a full collection walks over it
+        # every 15s or so and pauses the bot for around 100ms
+        gc.collect()
+        gc.freeze()
 
     async def on_step(self, iteration: int) -> None:
         await super(MyBot, self).on_step(iteration)

@@ -19,9 +19,20 @@ ATTACK_TARGET_IGNORE: set[UnitID] = {
 
 COMMON_UNIT_IGNORE_TYPES: set[UnitID] = {UnitID.EGG, UnitID.LARVA}
 
+DETECTION_STRUCTURES: set[UnitID] = {
+    UnitID.MISSILETURRET,
+    UnitID.PHOTONCANNON,
+    UnitID.SPORECRAWLER,
+}
+
 PROXY_4G_PLAN: list[tuple[UnitTypeId, int]] = [
     (UnitTypeId.PYLON, 1),
     (UnitTypeId.GATEWAY, 1),
+]
+
+PROXY_DARK_SHRINE_PLAN: list[tuple[UnitTypeId, int]] = [
+    (UnitTypeId.PYLON, 1),
+    (UnitTypeId.DARKSHRINE, 1),
 ]
 
 PROXY_VOID_PLAN: list[tuple[UnitTypeId, int]] = [
@@ -57,4 +68,3 @@ SUPPLY_TYPES: set[UnitID] = {
     UnitID.SUPPLYDEPOT,
     UnitID.PYLON,
 }
-
