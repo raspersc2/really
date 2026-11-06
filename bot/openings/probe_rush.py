@@ -114,9 +114,7 @@ class ProbeRush(OpeningBase):
                     else:
                         unit.gather(mf)
                 continue
-            target: Point2 = (
-                attack_target if squad.main_squad else pos_of_main_squad
-            )
+            target: Point2 = attack_target if squad.main_squad else pos_of_main_squad
             close_ground_enemy: Units = self.ai.mediator.get_units_in_range(
                 start_points=[squad.squad_position],
                 distances=12.5,

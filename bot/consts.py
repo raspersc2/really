@@ -35,6 +35,23 @@ PROXY_DARK_SHRINE_PLAN: list[tuple[UnitTypeId, int]] = [
     (UnitTypeId.DARKSHRINE, 1),
 ]
 
+# everything goes in the enemy natural, the first pylon on their townhall spot
+NATURAL_TAKEOVER_PLAN: list[tuple[UnitTypeId, int]] = [
+    (UnitTypeId.PYLON, 2),
+    (UnitTypeId.FORGE, 1),
+    (UnitTypeId.GATEWAY, 1),
+    (UnitTypeId.PHOTONCANNON, 2),
+    (UnitTypeId.CYBERNETICSCORE, 1),
+    (UnitTypeId.PYLON, 1),
+    (UnitTypeId.PHOTONCANNON, 2),
+    (UnitTypeId.STARGATE, 1),
+    (UnitTypeId.SHIELDBATTERY, 2),
+    (UnitTypeId.PYLON, 1),
+    (UnitTypeId.SHIELDBATTERY, 1),
+    (UnitTypeId.PYLON, 1),
+    (UnitTypeId.SHIELDBATTERY, 3),
+]
+
 PROXY_VOID_PLAN: list[tuple[UnitTypeId, int]] = [
     (UnitTypeId.PYLON, 2),
     (UnitTypeId.STARGATE, 1),

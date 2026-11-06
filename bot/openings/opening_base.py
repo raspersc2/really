@@ -3,12 +3,17 @@ from itertools import cycle
 
 from ares import AresBot
 from ares.consts import UnitRole
-from cython_extensions import cy_closest_to, cy_find_units_center_mass
+from cython_extensions import (
+    cy_closest_to,
+    cy_distance_to_squared,
+    cy_find_units_center_mass,
+)
 from cython_extensions.geometry import cy_distance_to
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.buff_id import BuffId
 from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
+from sc2.unit import Unit
 from sc2.units import Units
 
 from bot.consts import ATTACK_TARGET_IGNORE
@@ -109,6 +114,32 @@ class OpeningBase(metaclass=ABCMeta):
             ):
                 target = targets[0]
                 available_nexuses[0](AbilityId.EFFECT_CHRONOBOOSTENERGYCOST, target)
+
+    def _heal_structures(self, structure_types: set[UnitTypeId]) -> None:
+        require_healing: list[Unit] = [
+            s
+            for s in self.ai.structures
+            if s.shield_percentage < 1.0 and s.type_id in structure_types
+        ]
+        for battery in self.ai.mediator.get_own_structures_dict[
+            UnitTypeId.SHIELDBATTERY
+        ]:
+            if battery.is_using_ability(
+                AbilityId.SHIELDBATTERYRECHARGEEX5_SHIELDBATTERYRECHARGE
+            ):
+                continue
+            if not battery.is_powered or battery.energy < 1:
+                continue
+            can_heal: list[Unit] = [
+                r
+                for r in require_healing
+                if cy_distance_to_squared(r.position, battery.position) <= 36.0
+            ]
+            if can_heal:
+                battery(
+                    AbilityId.SHIELDBATTERYRECHARGEEX5_SHIELDBATTERYRECHARGE,
+                    cy_closest_to(battery.position, can_heal),
+                )
 
     def _count_started_at_proxy(
         self, unit_id: UnitTypeId, target: Point2, radius: float = 18.0

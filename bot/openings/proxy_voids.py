@@ -2,7 +2,6 @@ from ares import AresBot, UnitRole
 from ares.behaviors.macro import AutoSupply, BuildWorkers, MacroPlan, SpawnController
 from ares.managers.squad_manager import UnitSquad
 from cython_extensions import cy_closest_to, cy_distance_to_squared, cy_unit_pending
-from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 from sc2.unit import Unit
@@ -87,7 +86,7 @@ class ProxyVoids(OpeningBase):
 
     def _macro(self) -> None:
         self._chrono_boosts({UnitTypeId.STARGATE})
-        self._heal_structures()
+        self._heal_structures({UnitTypeId.STARGATE, UnitTypeId.PYLON})
         macro_plan: MacroPlan = MacroPlan()
         macro_plan.add(
             SpawnController(
@@ -147,30 +146,3 @@ class ProxyVoids(OpeningBase):
     def on_unit_destroyed(self, unit_tag: int) -> None:
         if unit_tag == self._primary_builder_tag:
             self._primary_builder_tag = 0
-
-    def _heal_structures(self):
-        require_healing: list[Unit] = [
-            s
-            for s in self.ai.structures
-            if s.shield_percentage < 1.0
-            and s.type_id in {UnitTypeId.STARGATE, UnitTypeId.PYLON}
-        ]
-        for battery in self.ai.mediator.get_own_structures_dict[
-            UnitTypeId.SHIELDBATTERY
-        ]:
-            if battery.is_using_ability(
-                AbilityId.SHIELDBATTERYRECHARGEEX5_SHIELDBATTERYRECHARGE
-            ):
-                continue
-            if not battery.is_powered or battery.energy < 1:
-                continue
-            can_heal: list[Unit] = [
-                r
-                for r in require_healing
-                if cy_distance_to_squared(r.position, battery.position) <= 36.0
-            ]
-            if can_heal:
-                battery(
-                    AbilityId.SHIELDBATTERYRECHARGEEX5_SHIELDBATTERYRECHARGE,
-                    cy_closest_to(battery.position, can_heal),
-                )

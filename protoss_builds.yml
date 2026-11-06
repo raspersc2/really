@@ -1,10 +1,3 @@
-# This file is optional and here as an example of how to activate the build runner
-# FEEL FREE TO DELETE!!
-
-# If playing as a different race, make a file similar to this but change filename:
-# `zerg_builds.yml` or `terran_builds.yml`
-
-
 # Save the game opening and result to disk?
 # Setting to `True` allows Ares to select a new opening after defeat
 UseData: True
@@ -18,12 +11,14 @@ BuildChoices:
     test_123:
         BotName: Test
         Cycle:
-            - ProxyDarkShrine
+            - NaturalTakeover
 
     Protoss:
         BotName: ProtossRace
         Cycle:
             - ProxyNexus
+            - ProxyDarkShrine
+            - NaturalTakeover
             - MightBeAWorkerRush
             - ProxyZealot
             - ProxyZealotWithProbes
@@ -33,12 +28,14 @@ BuildChoices:
             - ProxyVoids
             - Carriers
             - ProxyZealotInMain
-            - ProxyDarkShrine
+
 
     Random:
         BotName: RandomRace
         Cycle:
             - ProxyNexus
+            - ProxyDarkShrine
+            - NaturalTakeover
             - MightBeAWorkerRush
             - ProxyZealot
             - ProxyZealotWithProbes
@@ -48,12 +45,13 @@ BuildChoices:
             - ProxyVoids
             - Carriers
             - ProxyZealotInMain
-            - ProxyDarkShrine
 
     Terran:
         BotName: TerranRace
         Cycle:
             - ProxyNexus
+            - ProxyDarkShrine
+            - NaturalTakeover
             - MightBeAWorkerRush
             - ProxyZealot
             - ProxyZealotWithProbes
@@ -63,12 +61,13 @@ BuildChoices:
             - ProxyVoids
             - Carriers
             - ProxyZealotInMain
-            - ProxyDarkShrine
 
     Zerg:
         BotName: ZergRace
         Cycle:
             - ProxyNexus
+            - ProxyDarkShrine
+            - NaturalTakeover
             - MightBeAWorkerRush
             - ProxyZealot
             - ProxyZealotWithProbes
@@ -78,7 +77,6 @@ BuildChoices:
             - ProxyVoids
             - Carriers
             - ProxyZealotInMain
-            - ProxyDarkShrine
 
 Builds:
     Carriers:
@@ -157,6 +155,11 @@ Builds:
             - 19 roboticsfacility
             - 19 gateway
             - 19 gateway
+
+    # the class places every building
+    NaturalTakeover:
+        PersistentWorker: False
+        OpeningBuildOrder: []
 
     ProxyNexus:
         ConstantWorkerProductionTill: 18
