@@ -26,6 +26,7 @@ The following builds are available (with the possibility of more later):
 - Carriers
 - ProxyZealotInMain
 - ProxyDarkShrine
+- NaturalTakeover
 
 ## testing
 This bot can be downloaded and used for testing via the [local play bootstrap docker image](https://github.com/aiarena/local-play-bootstrap).

@@ -16,9 +16,9 @@ BuildChoices:
     Protoss:
         BotName: ProtossRace
         Cycle:
-            - ProxyNexus
             - ProxyDarkShrine
             - NaturalTakeover
+            - ProxyNexus
             - MightBeAWorkerRush
             - ProxyZealot
             - ProxyZealotWithProbes
@@ -29,13 +29,12 @@ BuildChoices:
             - Carriers
             - ProxyZealotInMain
 
-
     Random:
         BotName: RandomRace
         Cycle:
-            - ProxyNexus
             - ProxyDarkShrine
             - NaturalTakeover
+            - ProxyNexus
             - MightBeAWorkerRush
             - ProxyZealot
             - ProxyZealotWithProbes
@@ -49,9 +48,9 @@ BuildChoices:
     Terran:
         BotName: TerranRace
         Cycle:
-            - ProxyNexus
             - ProxyDarkShrine
             - NaturalTakeover
+            - ProxyNexus
             - MightBeAWorkerRush
             - ProxyZealot
             - ProxyZealotWithProbes
@@ -65,9 +64,9 @@ BuildChoices:
     Zerg:
         BotName: ZergRace
         Cycle:
-            - ProxyNexus
             - ProxyDarkShrine
             - NaturalTakeover
+            - ProxyNexus
             - MightBeAWorkerRush
             - ProxyZealot
             - ProxyZealotWithProbes
